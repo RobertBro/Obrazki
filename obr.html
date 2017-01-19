@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Sortowanie</title>
+
+<style>
+body {font-size:20px}
+#frame {position:absolute; left:0px; top:0px; right:0px; bottom:0px;}
+#frame {background-color:rgba(200,200,100,0.5);}
+#main  {position:absolute;background-color:rgba(200,200,200,0.4);overflow:hidden; top:2px; left:2px; right:2px; bottom:2px;}
+.obraz {position:absolute;top:0px;left:0px}
+
+ul.sidenav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #f1f1f1;
+
+    height: 100%;
+    overflow: auto;
+}
+
+ul.sidenav li a {
+float:left;
+width:47%;
+    color: #000;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+ 
+ul.sidenav li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+ul.sidenav li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+div.content {
+	position: relative;
+
+    padding: 1px 16px;
+    height: 1000px;
+	
+}
+
+@media screen and (max-width: 1050px){
+    ul.sidenav {
+        width:100%;
+        height:auto;
+        position:relative;
+		
+    }
+    ul.sidenav li a {
+        float: left;
+        padding: 15px;
+		width:50%;
+    }
+    div.content {margin-left:0;}
+
+}
+
+@media screen and (max-width: 400px){
+    ul.sidenav li a {
+        text-align: center;
+        float: none;
+    }
+}
+</style>
+
+<script>
+var Frame,Schem,Content;
+window.onload=function()
+{
+Content=document.querySelector('#content');
+	Frame=document.querySelector('#frame');
+	Main=document.querySelector('#main');
+	Schem={images:['img1.JPG','img2.JPG','img3.JPG','img4.JPG','img5.JPG','img6.JPG','img0.JPG'], 
+			bin:['bin.JPG'],
+	       kats:[['img0.JPG'],['img0.JPG'],['img0.JPG'],['img0.JPG']]};
+	
+	loadFromJson();
+	requestAnimationFrame(pageSet);
+	}
+
+
+var pageSizes={h:0,w:0}
+var DoMove;
+function pageSet()
+{
+	
+	var h1=Frame.offsetHeight;
+	var w1=Frame.offsetWidth;
+	var im;
+	if((h1!=pageSizes.h || w1!=pageSizes.w))
+	{
+	//alert("A");
+		hh=Math.floor(h1/2);
+		ww=Math.floor(w1/3);
+		Main.innerHTML='';
+		Frame.innerHTML='';
+		for(var i=0; i<6; i++)
+		{
+			var ob=document.createElement('div');
+			ob.style.width=ww+'px';
+			ob.style.height=hh+'px';
+			ob.className='obraz';
+			ob.style.left=Math.floor((i%3)*ww)+'px';
+			ob.style.top=Math.floor(Math.floor(i/3+0.01)*hh)+'px';
+			
+			switch(i)
+			{
+				case 0:          
+					if(Schem.kats[0].length>0)            
+					{
+						im=new Image;
+						im.src=Schem.kats[0][0];
+						im.width=ww;
+						im.height=hh;
+						ob.appendChild(im);
+						ob.nr=0;
+					}
+					break;
+				case 1:
+					if(Schem.images.length>0)            
+					{
+						nrwtab=0;
+						if(Schem.images.length>1)
+						{
+							DoMove=document.createElement('div');
+							im=new Image;
+							im.src=Schem.images[0];
+							im.width=ww;
+							im.height=hh;
+							DoMove.appendChild(im);
+							DoMove.className='obraz';
+							DoMove.style.zIndex=10;
+							DoMove.style.left=Math.floor((i%3)*ww+5)+'px';              
+							DoMove.style.top= Math.floor(Math.floor(i/3+0.01)*hh+5)+'px';
+							main.appendChild(DoMove);
+							
+						DoMove.nr='m';	
+						//DoMove.addEventListener('click',cykl,true);
+			DoMove.addEventListener('mousedown',beginOfMove,true);	
+			DoMove.addEventListener('touchstart',beginOfMove1,true);	
+			DoMove.addEventListener('touchmove',moveOfImage1,true);
+			DoMove.addEventListener('touchend',moveEnd,true);
+							
+
+									nrwtab++;
+						}						
+						im=new Image;
+						im.src=Schem.images[nrwtab];
+						im.width=ww;
+						im.height=hh;
+						ob.appendChild(im);
+						ob.nr='m';
+					}
+					
+					break;
+			
+				case 2:          
+					if(Schem.kats[2].length>0)            
+					{
+						im=new Image;
+						im.src=Schem.kats[2][0];
+						im.width=ww;
+						im.height=hh;
+						ob.appendChild(im);
+					 ob.nr=2;
+
+					}
+					break;
+
+				case 3:          
+					if(Schem.kats[1].length>0)            
+					{
+						im=new Image;
+						im.src=Schem.kats[1][0];
+						im.width=ww;
+						im.height=hh;
+						ob.appendChild(im);
+						ob.nr=1;
+					}
+					break;
+				
+				
+				case 4:
+
+								im=new Image;
+								im.src=Schem.bin[0];
+								im.width=ww;
+								im.height=hh;
+								ob.appendChild(im);
+								ob.nr='k';
+
+				break;
+			case 5:          
+					if(Schem.kats[3].length>0)
+			
+						im=new Image;
+						im.src=Schem.kats[3][0];
+						im.width=ww;
+						im.height=hh;
+						ob.appendChild(im);
+						ob.nr=3;
+					break;
+		
+			}//switch
+			main.appendChild(ob);
+			if(i!=1)
+			ob.addEventListener('click',cykl,true);
+
+		}
+		
+		pageSizes.w=w1;
+		pageSizes.h=h1;
+	}
+		requestAnimationFrame(pageSet);
+}
+
+function saveToJson(){
+
+	myJSON = JSON.stringify(Schem);
+	localStorage.setItem("sortJSON", myJSON);
+	//alert("done" + myJSON);
+
+}
+function loadFromJson(){
+
+	if (localStorage.getItem("sortJSON") === null) {
+		resetAll();
+		return;
+	}
+	text123 = localStorage.getItem("sortJSON");
+	Schem = JSON.parse(text123);
+	
+	
+
+}
+function resetAll(){
+
+	Schem={images:['img1.JPG','img2.JPG','img3.JPG','img4.JPG','img5.JPG','img6.JPG','img0.JPG'], 
+			bin:['bin.JPG'],
+	       kats:[['img0.JPG'],['img0.JPG'],['img0.JPG'],['img0.JPG']]};
+		   myJSON = JSON.stringify(Schem);
+	localStorage.setItem("sortJSON", myJSON);
+}
+
+
+
+function beginOfMove(e)
+{
+	beginOfMove.x=e.pageX;	
+	beginOfMove.y=e.pageY;
+		
+	e.preventDefault();
+	e.stopPropagation();
+	window.addEventListener('mousemove',moveOfImage,true);
+	window.addEventListener('mouseup',moveEnd,true);
+}
+
+var startruch=false;
+function beginOfMove1(e)
+{
+	startruch=true;
+	var dotyki=e.changedTouches;
+	if(dotyki.length<=0) return;
+	var dotyk=dotyki[0];
+	
+	beginOfMove.x=dotyk.pageX;	
+	beginOfMove.y=dotyk.pageY;
+		
+	e.preventDefault();
+	e.stopPropagation();
+}
+
+
+
+function moveOfImage1(e)
+{
+	var dotyki=e.changedTouches;
+	if(dotyki.length>0) 
+	{
+		var dotyk=dotyki[0];
+	
+		var x=dotyk.pageX;	
+		var y=dotyk.pageY;
+	
+		var dx=x-beginOfMove.x;
+		var dy=y-beginOfMove.y;
+		DoMove.style.left=(DoMove.offsetLeft+dx)+'px';
+		DoMove.style.top=(DoMove.offsetTop+dy)+'px';
+	
+	beginOfMove.x=dotyk.pageX;	
+	beginOfMove.y=dotyk.pageY;
+}
+	e.preventDefault();
+	e.stopPropagation();
+	 
+}
+
+function moveOfImage(e)
+{
+	var x=e.pageX;	
+	var y=e.pageY;
+	
+	var dx=x-beginOfMove.x;
+	var dy=y-beginOfMove.y;
+	DoMove.style.left=(DoMove.offsetLeft+dx)+'px';
+	DoMove.style.top=(DoMove.offsetTop+dy)+'px';
+	
+	beginOfMove.x=e.pageX;	
+	beginOfMove.y=e.pageY;
+	e.preventDefault();
+	e.stopPropagation();
+	 
+}
+function moveEnd(e)
+{
+	if(startruch===false)
+	{
+		window.removeEventListener('mousemove',moveOfImage,true);
+		window.removeEventListener('mouseup',moveEnd,true);
+	}
+	
+	var h1=Frame.offsetHeight;
+	var w1=Frame.offsetWidth;
+
+	if(DoMove.offsetLeft<w1/4) var k=0; else 
+	if(DoMove.offsetLeft<w1/2)  k=1; else k=2;
+	if(DoMove.offsetTop<h1/4) var w=0; else w=1;
+	
+	
+	if(k==1 && w==0)
+		SchemWybr=true;  
+	else
+	{
+		if(k==0 && w==0)	SchemWybr=Schem.kats[0]; else
+		if(k==0 && w==1)	SchemWybr=Schem.kats[1]; else
+		if(k==2 && w==0)	SchemWybr=Schem.kats[2]; else
+		if(k==2 && w==1)	SchemWybr=Schem.kats[3]; else
+		                  SchemWybr=false;
+	 }
+	 
+	if(SchemWybr===true || SchemWybr===false)
+	{
+		cykl();
+	}
+	else
+	{
+		var el=Schem.images.shift();
+		SchemWybr.unshift(el);
+	}
+	e.preventDefault();
+	e.stopPropagation();
+	pageSizes={h:0,w:0}
+}
+
+function cykl()
+{
+	var SchemWybr;
+	if(typeof this.nr == 'undefined') k='m'; 
+	else
+		var k=this.nr;
+		
+	//alert('cos' + k);
+	if(k=='k') return;
+	if(k=='m'){
+		SchemWybr=Schem.images; 
+	}		
+	else{
+		SchemWybr=Schem.kats[k];
+
+	}
+
+	if(SchemWybr.length<2) 
+	{
+		pageSizes={h:0,w:0}
+		return;
+	}
+
+	var el=SchemWybr.shift();
+	var elb=SchemWybr.pop();
+	SchemWybr.push(el);
+	SchemWybr.push(elb);
+	
+	pageSizes={h:0,w:0}
+  
+		
+	
+}
+
+</script>
+
+</head>
+<body>
+<ul class="sidenav">
+  <li><a onClick="resetAll()" href="">Reset</a></li>
+  <li><a onClick="saveToJson()" href="">Zapisz</a></li>
+</ul>
+
+<div id="content" class="content">
+<div id="frame"></div>
+<div id="main"></div>
+</div>
+
+
+
+
+
+</body>
+</html>
